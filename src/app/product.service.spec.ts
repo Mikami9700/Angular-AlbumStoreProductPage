@@ -1,15 +1,30 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { Injectable } from "@angular/core";
+import { Http, Response } from "@angular/http";
 
-import { ProductService } from './product.service';
+import "rxjs/add/operator/map";
+import { Observable } from "rxjs/Observable";
 
-describe('ProductService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [ProductService]
-    });
-  });
+import { Product } from "./product";
 
-  it('should be created', inject([ProductService], (service: ProductService) => {
-    expect(service).toBeTruthy();
-  }));
-});
+import { Album } from "./album";
+
+@Injectable()
+export class ProductService {
+  private _albumUrl = "../assets/album.json";
+
+  private _productsUrl = "../assets/products.json";
+
+  constructor(private _http: Http) {}
+
+  getAlbum(id: number): Observable<Album> {
+    return this._http
+      .get(this._albumUrl)
+      .map((response) => <Album>response.json());
+  }
+
+  getProducts(): Observable<Product[]> {
+    return this._http
+      .get(this._productsUrl)
+      .map((response) => <Product[]>response.json());
+  }
+}
